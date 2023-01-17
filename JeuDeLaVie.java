@@ -1,10 +1,12 @@
 public class JeuDeLaVie{
     int tailleX;
     int tailleY;
+    boolean[][] grille;
 
     JeuDeLaVie() throws Exception {
         this.tailleX = 0;
         this.tailleY = 0;
+        this.grille = new boolean[this.tailleX][this.tailleY];
         if (this.tailleX == 0 || this.tailleY == 0) {
             throw new Exception("Pas de paramètres");
         }
@@ -22,6 +24,7 @@ public class JeuDeLaVie{
         }
         this.tailleX = tailleX;
         this.tailleY = tailleY;
+        this.grille = new boolean[tailleX][tailleY];
     }
 
     public void afficher() {
