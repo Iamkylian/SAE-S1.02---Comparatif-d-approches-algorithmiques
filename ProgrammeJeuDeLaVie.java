@@ -3,18 +3,27 @@ import java.util.Scanner;
 public class ProgrammeJeuDeLaVie {
 
     public static void main(String[][] args) {
+
         try (Scanner sc = new Scanner(System.in)) {
+
             System.out.println("Bienvenue dans le jeu de la vie");
+
             System.out.println("Veuillez saisir la taille de la matrice : ");
+
             int tailleX = sc.nextInt();
             int tailleY = sc.nextInt();
+
             try {
+
                 JeuDeLaVie jeuV = new JeuDeLaVie(tailleX, tailleY);
                 jeuV.afficher();
+
             } catch (Exception e) {
+
                 System.out.println(e.getMessage());
             }
         }
+
         System.out.println("Fin du programme");
     }
 
@@ -39,15 +48,16 @@ public class ProgrammeJeuDeLaVie {
     }
 
     // La grille de cellules
-    static boolean[][] grille;
+    boolean[][] grille;
 
     // La taille de la grille (nombre de lignes et de colonnes)
     int taille = 5;
 
+
     /**
      * Rôle : Initialise la grille avec une taille donnée et l'état initial des
      * cellules
-     * 
+     *  @param m : la grille de cellules
      * 
      * @throws Exception : si les paramètres sont négatifs ou nuls
      */
@@ -134,7 +144,7 @@ public class ProgrammeJeuDeLaVie {
     }
 
     // Retourne l'état actuel de la grille
-    public static boolean[][] getGrille(JeuDeLaVie jeu) {
+    public static boolean[][] getGrille(boolean[][] grille) {
         return grille;
     }
 
