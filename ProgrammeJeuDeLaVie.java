@@ -2,35 +2,55 @@ import java.util.Scanner;
 
 public class ProgrammeJeuDeLaVie {
 
+    /** Rôle : permet de créer un jeu de la vie
+     * @param args : tableau de chaînes de caractères composé de "0" et de "1"
+     */
     public static void main(String[][] args) {
 
-        try (Scanner sc = new Scanner(System.in)) {
+        Scanner sc = new Scanner(System.in);
 
-            System.out.println("Bienvenue dans le jeu de la vie");
+        try {
+
+            System.out.println("Bienvenue dans le jeu de la vie" + "\n" + " . . . ");
 
             System.out.println("Veuillez saisir la taille de la matrice : ");
 
             int tailleX = sc.nextInt();
             int tailleY = sc.nextInt();
 
+            int[][] matrice = new int[tailleX][tailleY];
+
+            for (int i = 0; i < tailleX; i++) {
+
+                for (int j = 0; j < tailleY; j++) {
+
+                    matrice[i][j] = sc.nextInt();
+                }
+            }
             try {
 
                 JeuDeLaVie jeuV = new JeuDeLaVie(tailleX, tailleY);
                 jeuV.afficher();
+                creerJeuxDeLaVie(jeuV);
 
             } catch (Exception e) {
 
                 System.out.println(e.getMessage());
             }
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
         }
 
         System.out.println("Fin du programme");
+        sc.close();
     }
 
     Scanner clavier = new Scanner(System.in);
 
     int tailleX = clavier.nextInt();
     int tailleY = clavier.nextInt();
+
 
     /**
      * @param tailleX : nombre de lignes
@@ -42,10 +62,12 @@ public class ProgrammeJeuDeLaVie {
         return etatInitial;
     }
 
+
     public void afficher() {
         System.out.println("Taille X de la grille : " + tailleX);
         System.out.println("Taille Y de la grille : " + tailleY);
     }
+
 
     // La grille de cellules
     boolean[][] grille;
@@ -57,7 +79,8 @@ public class ProgrammeJeuDeLaVie {
     /**
      * Rôle : Initialise la grille avec une taille donnée et l'état initial des
      * cellules
-     *  @param m : la grille de cellules
+     * 
+     * @param m : la grille de cellules
      * 
      * @throws Exception : si les paramètres sont négatifs ou nuls
      */
@@ -148,4 +171,80 @@ public class ProgrammeJeuDeLaVie {
         return grille;
     }
 
+    public static int compterVoisins(MatriceEntier m, int i, int j) {
+        int nbVoisins = 0;
+        for (int x = -1; x <= 1; x++) {
+           for (int y = -1; y <= 1; y++) {
+              if (!(x == 0 && y == 0)) {
+                 try {
+                    int indiceLigne = (i + x + ProgrammeMatriceEntier.getNbLignes(m)) % ProgrammeMatriceEntier.getNbLignes(m);
+                    int indiceColonne = (j + y + ProgrammeMatriceEntier.getNbColonnes(m)) % ProgrammeMatriceEntier.getNbColonnes(m);
+                    nbVoisins += ProgrammeMatriceEntier.getElement(m, indiceLigne, indiceColonne);
+                 } catch (Exception e) {
+                    e.printStackTrace();
+                 }
+              }
+           }
+        }
+        return nbVoisins;
+     }
+  
+     public static void jouerTour(MatriceEntier m) {
+         
+         
+        try {
+           if (!ProgrammeMatriceEntier.estCarree(m)) {
+              throw new Exception("La m n'est pas carrée");
+           }
+
+           int[][] MatriceSuivante = new int[ProgrammeMatriceEntier.getNbLignes(m)][ProgrammeMatriceEntier.getNbColonnes(m)];
+
+           for (int i = 0; i < ProgrammeMatriceEntier.getNbLignes(m); i++) {
+
+              for (int j = 0; j < ProgrammeMatriceEntier.getNbColonnes(m); j++) {
+
+                 int nbVoisins = compterVoisins(m, i, j);
+
+                 if (ProgrammeMatriceEntier.getElement(m, i, j) == 1) {
+
+                    if (nbVoisins < 2 || nbVoisins > 3) {
+
+                       MatriceSuivante[i][j] = 0;
+
+                    } else {
+
+                       MatriceSuivante[i][j] = 1;
+
+                    }
+
+                 } else {
+
+                    if (nbVoisins == 3) {
+
+                       MatriceSuivante[i][j] = 1;
+
+                    } else {
+
+                       MatriceSuivante[i][j] = 0;
+
+                    }
+                 }
+              }
+           }
+           for (int i = 0; i < ProgrammeMatriceEntier.getNbLignes(m); i++) {
+
+              for (int j = 0; j < ProgrammeMatriceEntier.getNbColonnes(m); j++) {
+
+                 ProgrammeMatriceEntier.setElement(m, i, j, MatriceSuivante[i][j]);
+
+              }
+           }
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+     }
+  
+     
+  
 }
+
