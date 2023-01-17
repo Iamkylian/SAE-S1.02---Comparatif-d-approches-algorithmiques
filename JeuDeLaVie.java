@@ -20,11 +20,5 @@ public class JeuDeLaVie {
         }
     }
 
-    public boolean grilleConnue() {
-        return false;
-    }
-
-    public void calculerGenerationSuivante() {
-    }
-   
+    
 }
