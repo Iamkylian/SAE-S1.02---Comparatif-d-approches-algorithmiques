@@ -87,8 +87,25 @@ public class ProgrammeJeuDeLaVie {
         return false;
     }
 
-    public static void produireFichierHTML() {
-        // Code pour produire un fichier HTML contenant les différentes générations
+    public static void produireFichierHTML(ProgrammeJeuDeLaVie grilleVie) throws Exception {
+
+        String ln = System.getProperty("line.separator");
+        String chaine = "<table border=\"1\">" + ln;
+
+        int i = 0;
+        int j = 0;
+        while (i < ProgrammeMatriceEntier.getNbLignes(grilleVie.grilleCourante)) {
+            chaine = chaine + "<tr><td>";
+
+            for (j = 0; j < ProgrammeMatriceEntier.getNbColonnes(grilleVie.grilleCourante) - 1; j++) {
+                chaine = chaine + String.valueOf(grilleVie.grilleCourante.tabMat[i][j]) + "</td><td>";
+            }
+            chaine = chaine + String.valueOf(grilleVie.grilleCourante.tabMat[i][j]) + "</td></tr>" + ln;
+            i++;
+        }
+        chaine = chaine + "</table>" + ln;
+        System.out.println(chaine);
+
     }
 
     public static void main(String[] args) throws Exception {
