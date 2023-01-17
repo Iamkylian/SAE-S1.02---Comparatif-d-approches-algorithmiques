@@ -16,7 +16,7 @@ public class ProgrammeJeuDeLaVie {
     int tailleY = clavier.nextInt();
 
     /**
-     * Role :
+     * Role : 
      * 
      * @param pftailleX : nombre de lignes
      * @param pftailleY : nombre de colonnes
