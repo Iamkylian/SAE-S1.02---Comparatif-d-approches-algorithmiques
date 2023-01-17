@@ -17,17 +17,17 @@ public class ProgrammeJeuDeLaVie {
         // Initialisation de la grille de jeu de la vie
         for (int i = 0; i < taille + 2; i++) {
             for (int j = 0; j < taille + 2; j++) {
-                grilleCourante.tabMat[i][j] = 0;
+                ProgrammeMatriceEntier.setElement(grilleCourante, i, j, 0);
             }
         }
     }
 
-    public static int nbVoisinsVivants(int i, int j) throws Exception {
+    public int nbVoisinsVivants(int i, int j) throws Exception {
         int nbVoisins = 0;
         for (int x = i - 1; x <= i + 1; x++) {
             for (int y = j - 1; y <= j + 1; y++) {
                 if (x != i || y != j) {
-                    if (grilleCourante.tabMat[x][y] == 1) {
+                    if (ProgrammeMatriceEntier.getElement(grilleCourante, x, y) == 1) {
                         nbVoisins++;
                     }
                 }
@@ -36,41 +36,42 @@ public class ProgrammeJeuDeLaVie {
         return nbVoisins;
     }
 
-    public static boolean estVivante(int i, int j) throws Exception {
-        return grilleCourante.tabMat[i][j] == 1;
-    }
-
-    public static boolean seraVivante(int i, int j) throws Exception {
-        int n = nbVoisinsVivants(i, j);
-        boolean estVivante = estVivante(i, j);
-        if (estVivante) {
-            return (n == 2 || n == 3);
+    public boolean seraVivante(int i, int j) throws Exception {
+        int nbVoisins = nbVoisinsVivants(i, j);
+        if (ProgrammeMatriceEntier.getElement(grilleCourante, i, j) == 1) {
+            if (nbVoisins == 2 || nbVoisins == 3) {
+                return true;
+            }
         } else {
-            return (n == 3);
+            if (nbVoisins == 3) {
+                return true;
+            }
         }
+        return false;
     }
 
-    public static void calculerGenerationSuivante() throws Exception {
-        MatriceEntier temp = new MatriceEntier(taille + 2, taille + 2);
+    public void calculerGenerationSuivante() throws Exception {
+        MatriceEntier grilleSuivante = new MatriceEntier(taille + 2, taille + 2);
         for (int i = 0; i < taille + 2; i++) {
             for (int j = 0; j < taille + 2; j++) {
                 if (seraVivante(i, j)) {
-                    temp.tabMat[i][j] = 1;
+                    ProgrammeMatriceEntier.setElement(grilleSuivante, i, j, 1);
                 } else {
-                    temp.tabMat[i][j] = 0;
+                    ProgrammeMatriceEntier.setElement(grilleSuivante, i, j, 0);
                 }
             }
         }
-        grilleCourante = temp;
-        historiqueGrilles[generation] = temp;
+        historiqueGrilles[generation] = grilleCourante;
+        grilleCourante = grilleSuivante;
     }
 
-    public static boolean grilleConnue() throws Exception {
+    public boolean grilleConnue() throws Exception {
         for (int i = 0; i < generation; i++) {
             boolean identique = true;
             for (int j = 0; j < taille + 2; j++) {
                 for (int k = 0; k < taille + 2; k++) {
-                    if (grilleCourante.tabMat[j][k] != historiqueGrilles[i].tabMat[j][k]) {
+                    if (ProgrammeMatriceEntier.getElement(historiqueGrilles[i], j, k) != ProgrammeMatriceEntier
+                            .getElement(grilleCourante, j, k)) {
                         identique = false;
                         break;
                     }
@@ -92,30 +93,21 @@ public class ProgrammeJeuDeLaVie {
 
     public static void main(String[] args) throws Exception {
         // Demande à l'utilisateur de saisir la taille de la grille
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Entrez la taille de la grille : ");
-        int taille = scanner.nextInt();
-
-        // Initialisation de la grille de jeu de la vie
-        ProgrammeJeuDeLaVie jeu = new ProgrammeJeuDeLaVie(taille);
-
-        // Boucle pour calculer les générations suivantes
-        while (true) {
-            calculerGenerationSuivante();
-            generation++;
-            // Condition pour stopper les générations si la grille courante est identique à
-            // une grille précédente
-            if (grilleConnue()) {
-                System.out.println("La grille s'est stabilisée après " + generation + " générations.");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Saisir la taille de la grille : ");
+        int taille = sc.nextInt();
+        JeuDeLaVie grilleVie = new JeuDeLaVie(taille);
+        // Boucle pour jouer le jeu de la vie
+        while (grilleVie.generation < 10) {
+            grilleVie.calculerGenerationSuivante();
+            if (grilleVie.grilleConnue()) {
+                System.out.println("La même grille est apparue, arrêt des générations.");
                 break;
             }
-            // Condition pour stopper les générations après 10 générations
-            if (generation == 10) {
-                System.out.println("Le jeu s'est arrêté après 10 générations.");
-                break;
-            }
+            grilleVie.generation++;
         }
-        // Appel de la fonction pour produire un fichier HTML
+
+        // Production du fichier HTML
         produireFichierHTML();
     }
 
