@@ -20,6 +20,4 @@ public class ProgrammeJeuDeLaVie {
         System.out.println("Taille Y: " + tailleY);
     }
     //bonjour
-
-    //Je rajoute un commentaire hey
 }
