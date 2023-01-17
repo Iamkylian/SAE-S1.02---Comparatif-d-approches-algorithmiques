@@ -19,4 +19,6 @@ public class ProgrammeJeuDeLaVie {
         System.out.println("Taille X: " + tailleX);
         System.out.println("Taille Y: " + tailleY);
     }
+
+    public void bonjour(){}
 }

@@ -24,4 +24,3 @@ public class JeuDeLaVie{
         System.out.println("Nombre de colonnes: " + this.nbC);
     }
 }
-
