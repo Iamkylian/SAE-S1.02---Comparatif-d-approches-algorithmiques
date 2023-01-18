@@ -126,6 +126,8 @@ public class ProgrammeJeuDeLaVie {
 
         // Production du fichier HTML
         produireFichierHTML();
+
+        //Bonjour
     }
 
 }
