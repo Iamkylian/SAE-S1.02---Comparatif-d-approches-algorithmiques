@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.Random;
 
 public class ProgrammeJeuDeLaVie {
 
@@ -22,12 +21,12 @@ public class ProgrammeJeuDeLaVie {
         }
     }
 
-    public int nbVoisinsVivants(int i, int j) throws Exception {
+    public static int nbVoisinsVivants(int i, int j, ProgrammeJeuDeLaVie grilleVie) throws Exception {
         int nbVoisins = 0;
         for (int x = i - 1; x <= i + 1; x++) {
             for (int y = j - 1; y <= j + 1; y++) {
                 if (x != i || y != j) {
-                    if (ProgrammeMatriceEntier.getElement(grilleCourante, x, y) == 1) {
+                    if (ProgrammeMatriceEntier.getElement(grilleVie.grilleCourante, x, y) == 1) {
                         nbVoisins++;
                     }
                 }
@@ -36,9 +35,9 @@ public class ProgrammeJeuDeLaVie {
         return nbVoisins;
     }
 
-    public boolean seraVivante(int i, int j) throws Exception {
-        int nbVoisins = nbVoisinsVivants(i, j);
-        if (ProgrammeMatriceEntier.getElement(grilleCourante, i, j) == 1) {
+    public static boolean seraVivante(int i, int j, ProgrammeJeuDeLaVie grilleVie) throws Exception {
+        int nbVoisins = nbVoisinsVivants(i, j, grilleVie);
+        if (ProgrammeMatriceEntier.getElement(grilleVie.grilleCourante, i, j) == 1) {
             if (nbVoisins == 2 || nbVoisins == 3) {
                 return true;
             }
@@ -50,28 +49,33 @@ public class ProgrammeJeuDeLaVie {
         return false;
     }
 
-    public void calculerGenerationSuivante() throws Exception {
-        MatriceEntier grilleSuivante = new MatriceEntier(taille + 2, taille + 2);
-        for (int i = 0; i < taille + 2; i++) {
-            for (int j = 0; j < taille + 2; j++) {
-                if (seraVivante(i, j)) {
+    public static void calculerGenerationSuivante(ProgrammeJeuDeLaVie grilleVie) throws Exception {
+        MatriceEntier grilleSuivante = new MatriceEntier(grilleVie.taille + 2, grilleVie.taille + 2);
+        for (int i = 0; i < grilleVie.taille + 2; i++) {
+            for (int j = 0; j < grilleVie.taille + 2; j++) {
+                if (seraVivante(i, j, grilleVie)) {
                     ProgrammeMatriceEntier.setElement(grilleSuivante, i, j, 1);
                 } else {
                     ProgrammeMatriceEntier.setElement(grilleSuivante, i, j, 0);
                 }
             }
         }
-        historiqueGrilles[generation] = grilleCourante;
-        grilleCourante = grilleSuivante;
+        grilleVie.historiqueGrilles[grilleVie.generation] = grilleVie.grilleCourante;
+        grilleVie.grilleCourante = grilleSuivante;
     }
 
-    public boolean grilleConnue() throws Exception {
-        for (int i = 0; i < generation; i++) {
+    /**
+     * @param grilleVie : la grille de jeu de la vie à tester
+     * @return true si la grille courante est identique à une des grilles précédentes, false sinon  
+     * @throws Exception : si la grille courante est identique à une des grilles précédentes
+     */
+    public static boolean grilleConnue(ProgrammeJeuDeLaVie grilleVie) throws Exception {
+        for (int i = 0; i < grilleVie.generation; i++) {
             boolean identique = true;
-            for (int j = 0; j < taille + 2; j++) {
-                for (int k = 0; k < taille + 2; k++) {
-                    if (ProgrammeMatriceEntier.getElement(historiqueGrilles[i], j, k) != ProgrammeMatriceEntier
-                            .getElement(grilleCourante, j, k)) {
+            for (int j = 0; j < grilleVie.taille + 2; j++) {
+                for (int k = 0; k < grilleVie.taille + 2; k++) {
+                    if (ProgrammeMatriceEntier.getElement(grilleVie.historiqueGrilles[i], j, k) != ProgrammeMatriceEntier
+                            .getElement(grilleVie.grilleCourante, j, k)) {
                         identique = false;
                         break;
                     }
@@ -113,11 +117,11 @@ public class ProgrammeJeuDeLaVie {
         Scanner sc = new Scanner(System.in);
         System.out.println("Saisir la taille de la grille : ");
         int taille = sc.nextInt();
-        JeuDeLaVie grilleVie = new JeuDeLaVie(taille);
+        ProgrammeJeuDeLaVie grilleVie = new ProgrammeJeuDeLaVie(taille);
         // Boucle pour jouer le jeu de la vie
         while (grilleVie.generation < 10) {
-            grilleVie.calculerGenerationSuivante();
-            if (grilleVie.grilleConnue()) {
+            calculerGenerationSuivante(grilleVie);
+            if (grilleConnue(grilleVie)) {
                 System.out.println("La même grille est apparue, arrêt des générations.");
                 break;
             }
@@ -125,9 +129,8 @@ public class ProgrammeJeuDeLaVie {
         }
 
         // Production du fichier HTML
-        produireFichierHTML();
+        produireFichierHTML(grilleVie);
 
-        //Bonjour
     }
 
 }
